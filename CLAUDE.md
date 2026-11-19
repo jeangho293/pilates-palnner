@@ -35,3 +35,23 @@
   (승인된 기획이면 변경 결과가 자동으로 버전 이력에 스냅샷된다.)
 
 MCP 툴이 보이지 않으면 이 저장소에 `.mcp.json`이 있는지, 서버가 떠 있는지 확인하라.
+
+## 앱별 전담 에이전트
+
+모노레포의 각 앱은 전담 서브에이전트(`.claude/agents/`)가 맡는다. 에이전트끼리 작업이 겹치지
+않도록 **각 에이전트는 자기 앱 폴더만 수정**하고, 다른 폴더는 읽기만 한다
+(`.claude/hooks/guard-app-scope.mjs` 훅이 강제).
+
+| 에이전트 | 수정 가능 범위 | 담당 |
+| --- | --- | --- |
+| `web-dev` | `apps/web/` | 고객 웹(PLW) `front` 태스크 |
+| `back-office-dev` | `apps/back-office/` | 백오피스(PLB) `front` 태스크 |
+| `core-api-dev` | `apps/core-api/` | PLW·PLB `back` 태스크 |
+
+- 🔴 **core-api 변경은 반드시 사용자 승인 후에만 한다.** core-api 아키텍처는 사용자가 직접
+  설계한다. `core-api-dev` 에이전트든 메인 세션이든, `apps/core-api`를 바꾸기 전에 바꿀 파일과
+  변경 요지를 먼저 제시하고 승인을 받는다(`.claude/hooks/require-core-api-approval.mjs` 훅이
+  쓰기 동작마다 승인 요청을 띄운다). back-office·web은 승인 없이 진행해도 된다.
+- 루트 설정(`package.json`, `turbo.json`, `pnpm-workspace.yaml`)·공용 패키지(`packages/`)·
+  `.claude/` 변경은 메인 세션이 맡는다. 에이전트가 범위 밖 변경이 필요하다고 보고하면 메인
+  세션이 처리하거나 해당 앱 에이전트에게 넘긴다.
