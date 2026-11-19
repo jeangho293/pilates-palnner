@@ -7,5 +7,7 @@
  */
 declare const brand: unique symbol;
 
-/** `YYYY-MM-DD` 또는 `YYYY-MM-DD HH:mm:ss` 형식의 문자열 */
+/**
+ *`YYYY-MM-DD` 또는 `YYYY-MM-DD HH:mm:ss` 형식의 문자열
+ */
 export type CalendarDate = string & { readonly [brand]: 'CalendarDate' };

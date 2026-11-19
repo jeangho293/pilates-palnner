@@ -34,5 +34,5 @@ export class Staff extends DddBaseAggregate {
   status: StaffStatus;
 
   @Column({ type: 'varchar', length: 30, nullable: true, comment: '마지막 로그인 일시 (YYYY-MM-DD HH:mm:ss)' })
-  lastLoginOn: CalendarDate;
+  lastLoginOn?: CalendarDate | null;
 }
