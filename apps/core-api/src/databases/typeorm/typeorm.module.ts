@@ -1,18 +1,17 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import entities from './entities';
+import { ConfigsService } from '@configs';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '1234',
-      database: 'plates_planner',
-      entities,
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigsService],
+      useFactory: (configsService: ConfigsService) => ({
+        ...configsService.mysql,
+        entities,
+        synchronize: true,
+      }),
     }),
   ],
 })
