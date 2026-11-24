@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { AdminStaffService } from '../application/admin-staff.service';
 import { AdminStaffQueryDto } from './dto';
 
@@ -25,6 +25,17 @@ export class AdminStaffController {
     // 2. Get context
     // 3. Get result
     const data = await this.adminStaffService.search({ statuses, keyword }, options);
+
+    // 4. Send response
+    return { data };
+  }
+
+  @Get(':id')
+  async retrieve(@Param('id', ParseIntPipe) id: number) {
+    // 1. Destructure body, params, query
+    // 2. Get context
+    // 3. Get result
+    const data = await this.adminStaffService.retrieve({ id });
 
     // 4. Send response
     return { data };

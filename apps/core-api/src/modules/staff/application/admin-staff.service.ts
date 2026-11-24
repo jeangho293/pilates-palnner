@@ -4,6 +4,7 @@ import { StaffRepository } from '../infrastructure/staff.repository';
 import { PaginationOptions } from '@libs/utils';
 import { StaffStatus } from '../domain/staff.entity';
 import { AdminStaffResponseDto } from '../presentation/dto';
+import { StaffNotFoundException } from '../domain/exception';
 
 @Injectable()
 export class AdminStaffService extends DddService {
@@ -17,5 +18,15 @@ export class AdminStaffService extends DddService {
     const [staffs, total] = await this.staffRepository.findAndCount({ statuses, keyword }, options);
 
     return { staffs: staffs.map((staff) => staff.toInstance(AdminStaffResponseDto)), total };
+  }
+
+  async retrieve({ id }: { id: number }) {
+    const [staff] = await this.staffRepository.find({ ids: [id] });
+
+    if (!staff) {
+      throw new StaffNotFoundException(id);
+    }
+
+    return staff.toInstance(AdminStaffResponseDto);
   }
 }
