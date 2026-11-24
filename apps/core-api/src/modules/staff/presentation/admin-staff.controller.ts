@@ -1,5 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { AdminStaffService } from '../application/admin-staff.service';
+import { AdminStaffQueryDto } from './dto';
 
 @Controller('admins/staffs')
 export class AdminStaffController {
@@ -17,11 +18,15 @@ export class AdminStaffController {
   }
 
   @Get('search')
-  async search(@Query() query: any) {
+  async search(@Query() query: AdminStaffQueryDto) {
     // 1. Destructure body, params, query
+    const { statuses, keyword, ...options } = query;
+
     // 2. Get context
     // 3. Get result
+    const data = await this.adminStaffService.search({ statuses, keyword }, options);
+
     // 4. Send response
-    return { data: {} };
+    return { data };
   }
 }

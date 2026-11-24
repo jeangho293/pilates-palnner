@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { StaffRepository } from '../infrastructure/staff.repository';
 import { PaginationOptions } from '@libs/utils';
 import { StaffStatus } from '../domain/staff.entity';
+import { AdminStaffResponseDto } from '../presentation/dto';
 
 @Injectable()
 export class AdminStaffService extends DddService {
@@ -15,6 +16,6 @@ export class AdminStaffService extends DddService {
   async search({ statuses, keyword }: { statuses?: StaffStatus[]; keyword?: string }, options?: PaginationOptions) {
     const [staffs, total] = await this.staffRepository.findAndCount({ statuses, keyword }, options);
 
-    return { staffs, total };
+    return { staffs: staffs.map((staff) => staff.toInstance(AdminStaffResponseDto)), total };
   }
 }
