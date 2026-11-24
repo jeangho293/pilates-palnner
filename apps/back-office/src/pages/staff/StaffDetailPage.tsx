@@ -1,7 +1,7 @@
 import { EditOutlined, KeyOutlined, LogoutOutlined, UndoOutlined } from '@ant-design/icons'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Alert, App, Button, Card, Descriptions, Flex, Form, Input, Modal, Tag, Tooltip, Typography } from 'antd'
-import { useState, type ReactElement } from 'react'
+import { Alert, App, Button, Card, Descriptions, Flex, Form, Input, Modal, Tag, Typography } from 'antd'
+import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { staffApi } from '../../api/staffApi'
 import type { StaffDetail } from '../../api/types'
@@ -17,12 +17,6 @@ import { paths } from '../../routes/paths'
 import { tokens } from '../../theme/tokens'
 import { StaffStatusTag } from './StaffStatusTag'
 
-/**
- * core-api에 아직 없는 직원 변경 API(이름 수정·비밀번호 재설정·퇴사·복귀).
- * 상세 조회는 실제 DB를 읽으므로 mock으로 바꾸면 화면에 반영되지 않는다 — API가 생기면 false로 바꾼다.
- */
-const STAFF_ACTIONS_PENDING = true
-const PENDING_TIP = '준비 중인 기능입니다'
 
 export function StaffDetailPage() {
   const { staffId } = useParams()
@@ -125,30 +119,23 @@ export function StaffDetailPage() {
         }
         extra={
           <>
-            <PendingTooltip>
-              <Button icon={<EditOutlined />} disabled={STAFF_ACTIONS_PENDING} onClick={() => setNameOpen(true)}>
-                이름 수정
-              </Button>
-            </PendingTooltip>
-            <PendingTooltip>
-              <Button icon={<KeyOutlined />} disabled={STAFF_ACTIONS_PENDING} onClick={() => setPwOpen(true)}>
-                비밀번호 재설정
-              </Button>
-            </PendingTooltip>
+            <Button icon={<EditOutlined />} onClick={() => setNameOpen(true)}>
+              이름 수정
+            </Button>
+            <Button icon={<KeyOutlined />} onClick={() => setPwOpen(true)}>
+              비밀번호 재설정
+            </Button>
             {/* 관리자 자기 자신은 퇴사 처리할 수 없다 */}
-            {!isSelf && (
-              <PendingTooltip>
-                {exited ? (
-                  <Button icon={<UndoOutlined />} disabled={STAFF_ACTIONS_PENDING} onClick={confirmReinstate}>
-                    복귀 처리
-                  </Button>
-                ) : (
-                  <Button danger icon={<LogoutOutlined />} disabled={STAFF_ACTIONS_PENDING} onClick={confirmExit}>
-                    퇴사 처리
-                  </Button>
-                )}
-              </PendingTooltip>
-            )}
+            {!isSelf &&
+              (exited ? (
+                <Button icon={<UndoOutlined />} onClick={confirmReinstate}>
+                  복귀 처리
+                </Button>
+              ) : (
+                <Button danger icon={<LogoutOutlined />} onClick={confirmExit}>
+                  퇴사 처리
+                </Button>
+              ))}
           </>
         }
       />
@@ -243,10 +230,6 @@ export function StaffDetailPage() {
       />
     </>
   )
-}
-
-function PendingTooltip({ children }: { children: ReactElement }) {
-  return STAFF_ACTIONS_PENDING ? <Tooltip title={PENDING_TIP}>{children}</Tooltip> : children
 }
 
 function EditNameModal({
