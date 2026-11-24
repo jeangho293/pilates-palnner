@@ -12,4 +12,11 @@ export abstract class DddBaseAggregate {
 
   @Column({ type: 'varchar', length: 60, select: false, nullable: true, comment: '수정 txId' })
   updatedBy: string;
+
+  setTxId(txId: string) {
+    if (!this.createdBy) {
+      this.createdBy = txId;
+    }
+    this.updatedBy = txId;
+  }
 }

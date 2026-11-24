@@ -26,7 +26,8 @@
       "@libs/*": ["./src/libs/*"],
       "@databases": ["./src/databases"],
       "@modules/*": ["./src/modules/*"],
-      "@configs": ["./src/configs"]
+      "@configs": ["./src/configs"],
+      "@middlewares": ["./src/middlewares"]
     }
   }
 }
