@@ -1,6 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { Alert, Button, Card, Table, Tag } from 'antd'
+import { Alert, Button, Card, Table, Tag, Tooltip } from 'antd'
 import type { TableColumnsType } from 'antd'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -105,9 +105,12 @@ export function StaffListPage() {
         title="직원 관리"
         description="백오피스에 로그인하는 직원 계정과 역할을 관리합니다."
         extra={
-          <Button type="primary" icon={<PlusOutlined />} onClick={() => setCreateOpen(true)}>
-            직원 추가
-          </Button>
+          // 직원 생성 API가 core-api에 생기기 전까지 막아 둔다 (목록은 실제 DB를 읽으므로 mock 생성은 보이지 않는다)
+          <Tooltip title="준비 중인 기능입니다">
+            <Button type="primary" icon={<PlusOutlined />} disabled onClick={() => setCreateOpen(true)}>
+              직원 추가
+            </Button>
+          </Tooltip>
         }
       />
       <Card>

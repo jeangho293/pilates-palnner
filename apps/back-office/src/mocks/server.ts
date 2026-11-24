@@ -17,7 +17,6 @@ import type {
   SortOrder,
   Staff,
   StaffCreateInput,
-  StaffDetail,
 } from '../api/types'
 import { hashPassword, mockConfig } from './config'
 import {
@@ -225,8 +224,6 @@ function needsWriting(i: InstructorRecord) {
   return !i.introduction || i.specialties.length === 0
 }
 
-const STATUS_ORDER: Record<StaffRecord['status'], number> = { ready: 0, active: 1, exited: 2 }
-
 // ── 라우트 ───────────────────────────────────────────────
 const routes: Record<string, Handler> = {
   // 인증
@@ -336,27 +333,7 @@ const routes: Record<string, Handler> = {
   },
 
   // 직원 (관리자)
-  'GET /staff': (ctx) => {
-    authenticate(ctx, ['admin'])
-    const { q, status, sortField = 'lastLoginOn', sortOrder = 'desc' } = ctx.query
-    let rows = getDb().staff
-    const keyword = (q ?? '').trim().toLowerCase()
-    if (keyword) rows = rows.filter((s) => s.name.toLowerCase().includes(keyword) || s.email.includes(keyword))
-    if (status === 'ready' || status === 'active' || status === 'exited') {
-      rows = rows.filter((s) => s.status === status)
-    }
-    const getters: Record<string, (s: StaffRecord) => string | number | boolean | null> = {
-      name: (s) => s.name,
-      email: (s) => s.email,
-      role: (s) => s.role,
-      // 준비 → 활성 → 퇴사 순
-      status: (s) => STATUS_ORDER[s.status],
-      lastLoginOn: (s) => s.lastLoginOn,
-      createdAt: (s) => s.createdAt,
-    }
-    rows = sortBy(rows, getters[sortField] ?? getters.lastLoginOn, sortOrder as SortOrder)
-    return paginate(rows.map(toStaff), ctx.query)
-  },
+  // GET /staff(목록)·GET /staff/:id(상세)는 core-api 연동 완료 — mock 없음 (api/staffApi.ts)
   'POST /staff': (ctx) => {
     authenticate(ctx, ['admin'])
     const db = getDb()
@@ -402,16 +379,6 @@ const routes: Record<string, Handler> = {
     }
     commit()
     return toStaff(rec)
-  },
-  'GET /staff/:id': (ctx) => {
-    authenticate(ctx, ['admin'])
-    const s = findStaff(ctx.params.id)
-    const i = instructorOf(s.id)
-    const detail: StaffDetail = {
-      ...toStaff(s),
-      instructor: i ? { id: i.id, displayName: i.displayName, profileImageUrl: i.profileImageUrl, isPublic: i.isPublic } : null,
-    }
-    return detail
   },
   'PATCH /staff/:id': (ctx) => {
     authenticate(ctx, ['admin'])

@@ -1,18 +1,21 @@
 /** API 오류 코드. core-api 오류 응답의 `code`와 맞춘다. */
-export type ApiErrorCode =
-  | 'UNAUTHORIZED'
-  | 'SESSION_EXPIRED'
-  | 'FORBIDDEN'
-  | 'NOT_FOUND'
-  | 'VALIDATION_FAILED'
-  | 'INVALID_CREDENTIALS'
-  | 'ACCOUNT_EXITED'
-  | 'EMAIL_TAKEN'
-  | 'INVALID_CURRENT_PASSWORD'
-  | 'CANNOT_EXIT_SELF'
-  | 'INSTRUCTOR_STAFF_EXITED'
-  | 'NETWORK_ERROR'
-  | 'UNKNOWN'
+export const API_ERROR_CODES = [
+  'UNAUTHORIZED',
+  'SESSION_EXPIRED',
+  'FORBIDDEN',
+  'NOT_FOUND',
+  'VALIDATION_FAILED',
+  'INVALID_CREDENTIALS',
+  'ACCOUNT_EXITED',
+  'EMAIL_TAKEN',
+  'INVALID_CURRENT_PASSWORD',
+  'CANNOT_EXIT_SELF',
+  'INSTRUCTOR_STAFF_EXITED',
+  'NETWORK_ERROR',
+  'UNKNOWN',
+] as const
+
+export type ApiErrorCode = (typeof API_ERROR_CODES)[number]
 
 export class ApiError extends Error {
   readonly status: number

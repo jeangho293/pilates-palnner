@@ -35,7 +35,16 @@ export const staffApi = {
     })
     return { items: data.staffs, total: data.total, page: params.page, pageSize: params.pageSize }
   },
-  get: (id: number) => request<StaffDetail>({ method: 'GET', url: `/staff/${id}` }),
+  /** 직원 상세 — core-api 연동 완료 (항상 실제 API 호출) */
+  get: async (id: number): Promise<StaffDetail> => {
+    const { data } = await request<{ data: Staff & Partial<Pick<StaffDetail, 'instructor'>> }>({
+      method: 'GET',
+      url: `/admins/staffs/${id}`,
+      mock: false,
+    })
+    // core-api가 연결된 강사 프로필을 아직 내려주지 않는다 — 생기면 그대로 쓴다
+    return { ...data, instructor: data.instructor ?? null }
+  },
   create: (body: StaffCreateInput) => request<Staff>({ method: 'POST', url: '/staff', body }),
   updateName: (id: number, name: string) =>
     request<Staff>({ method: 'PATCH', url: `/staff/${id}`, body: { name } }),

@@ -1,4 +1,4 @@
-import { ApiError, toApiError } from './errors'
+import { API_ERROR_CODES, ApiError, toApiError, type ApiErrorCode } from './errors'
 import { mockRequest } from '../mocks/server'
 
 export type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE'
@@ -71,6 +71,35 @@ function emit(event: AuthEvent, error: ApiError) {
 }
 
 // ── 요청 ─────────────────────────────────────────────────
+interface ErrorBody {
+  code?: string
+  /** NestJS 기본 오류는 검증 실패 시 message가 배열이다 */
+  message?: string | string[]
+  details?: Record<string, unknown>
+}
+
+const KNOWN_CODES = new Set<string>(API_ERROR_CODES)
+const CODE_BY_STATUS: Partial<Record<number, ApiErrorCode>> = {
+  400: 'VALIDATION_FAILED',
+  404: 'NOT_FOUND',
+}
+/** 401·403은 공통 처리(로그인 만료·접근 권한 없음 화면)로 이어지므로 코드가 없을 때만 상태로 분류한다 */
+const AUTH_CODE_BY_STATUS: Partial<Record<number, ApiErrorCode>> = {
+  401: 'UNAUTHORIZED',
+  403: 'FORBIDDEN',
+}
+
+/**
+ * 서버 오류 코드를 화면이 다루는 코드로 맞춘다.
+ * 화면이 아는 코드면 그대로, 도메인별 코드(예: STAFF_NOT_FOUND)면 상태 코드로 분류한다.
+ * 원래 코드는 ApiError.details.serverCode 에 남긴다.
+ */
+function toErrorCode(status: number, code?: string): ApiErrorCode {
+  if (code && KNOWN_CODES.has(code)) return code as ApiErrorCode
+  if (!code && AUTH_CODE_BY_STATUS[status]) return AUTH_CODE_BY_STATUS[status]
+  return CODE_BY_STATUS[status] ?? 'UNKNOWN'
+}
+
 async function realFetch<T>(config: RequestConfig, token: string | null): Promise<T> {
   const url = new URL(`${API_BASE_URL.replace(/\/$/, '')}${config.url}`, window.location.origin)
   if (config.params) {
@@ -90,18 +119,15 @@ async function realFetch<T>(config: RequestConfig, token: string | null): Promis
     body: config.body === undefined ? undefined : JSON.stringify(config.body),
   })
   if (!res.ok) {
-    const data = (await res.json().catch(() => ({}))) as {
-      code?: ApiError['code']
-      /** NestJS 기본 오류는 검증 실패 시 message가 배열이다 */
-      message?: string | string[]
-      details?: Record<string, unknown>
-    }
-    const message = Array.isArray(data.message) ? data.message.join('\n') : data.message
+    const json = (await res.json().catch(() => ({}))) as ErrorBody & { data?: ErrorBody }
+    // core-api 예외 필터는 { data: { code, message } } 로 감싸서 보낸다
+    const body = json.data ?? json
+    const message = Array.isArray(body.message) ? body.message.join('\n') : body.message
     throw new ApiError(
       res.status,
-      data.code ?? (res.status === 400 ? 'VALIDATION_FAILED' : 'UNKNOWN'),
+      toErrorCode(res.status, body.code),
       message ?? '요청을 처리하지 못했습니다.',
-      data.details,
+      { ...body.details, ...(body.code ? { serverCode: body.code } : {}) },
     )
   }
   if (res.status === 204) return undefined as T
