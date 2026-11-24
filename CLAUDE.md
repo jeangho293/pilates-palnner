@@ -55,6 +55,9 @@ MCP 툴이 보이지 않으면 이 저장소에 `.mcp.json`이 있는지, 서버
     필요할 때): `core-api-dev` 에이전트든 메인 세션이든 바꿀 파일과 변경 요지를 먼저 제시하고
     승인을 받는다. 질문·리뷰 요청("이렇게 해도 되나?")은 지시가 아니므로 답만 하고 고치지 않는다.
   - back-office·web은 승인 없이 진행해도 된다.
+- back-office에서 core-api 연동이 정상 동작하는 것을 확인하면, 해당 엔드포인트에 남은 mock
+  데이터(mock 핸들러 등)는 지운다. 메인 세션이 직접 작업할 때도 같다
+  (자세한 절차는 `.claude/agents/back-office-dev.md`의 "core-api 연동과 mock 정리").
 - 루트 설정(`package.json`, `turbo.json`, `pnpm-workspace.yaml`)·공용 패키지(`packages/`)·
   `.claude/` 변경은 메인 세션이 맡는다. 에이전트가 범위 밖 변경이 필요하다고 보고하면 메인
   세션이 처리하거나 해당 앱 에이전트에게 넘긴다.
