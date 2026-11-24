@@ -1,6 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { DddBaseAggregate } from '@libs/ddd';
 import type { CalendarDate } from '@libs/types';
+import { stripUndefined } from '@libs/utils';
 
 export enum StaffRole {
   ADMIN = 'admin',
@@ -35,4 +36,12 @@ export class Staff extends DddBaseAggregate {
 
   @Column({ type: 'varchar', length: 30, nullable: true, comment: '마지막 로그인 일시 (YYYY-MM-DD HH:mm:ss)' })
   lastLoginOn?: CalendarDate | null;
+
+  update(args: { name?: string; password?: string }) {
+    const changed = stripUndefined(args);
+
+    if (changed) {
+      Object.assign(this, changed);
+    }
+  }
 }

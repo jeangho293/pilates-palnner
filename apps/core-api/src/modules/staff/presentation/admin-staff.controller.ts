@@ -1,6 +1,6 @@
-import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Put, Query } from '@nestjs/common';
 import { AdminStaffService } from '../application/admin-staff.service';
-import { AdminStaffQueryDto } from './dto';
+import { AdminStaffQueryDto, StaffChangeNameDto } from './dto';
 
 @Controller('admins/staffs')
 export class AdminStaffController {
@@ -39,5 +39,16 @@ export class AdminStaffController {
 
     // 4. Send response
     return { data };
+  }
+
+  @Put(':id/name')
+  async changeName(@Param('id', ParseIntPipe) id: number, @Body() body: StaffChangeNameDto) {
+    // 1. Destructure body, params, query
+    // 2. Get context
+    // 3. Get result
+    await this.adminStaffService.changeName({ id, name: body.name });
+
+    // 4. Send response
+    return { data: {} };
   }
 }

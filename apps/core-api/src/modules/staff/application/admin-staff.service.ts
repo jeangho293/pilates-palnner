@@ -29,4 +29,16 @@ export class AdminStaffService extends DddService {
 
     return staff.toInstance(AdminStaffResponseDto);
   }
+
+  async changeName({ id, name }: { id: number; name: string }) {
+    const [staff] = await this.staffRepository.find({ ids: [id] });
+
+    if (!staff) {
+      throw new StaffNotFoundException(id);
+    }
+
+    staff.update({ name });
+
+    await this.staffRepository.save([staff]);
+  }
 }
