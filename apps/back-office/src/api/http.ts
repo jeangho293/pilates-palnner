@@ -1,7 +1,7 @@
 import { API_ERROR_CODES, ApiError, toApiError, type ApiErrorCode } from './errors'
 import { mockRequest } from '../mocks/server'
 
-export type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE'
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
 export interface RequestConfig {
   method: HttpMethod

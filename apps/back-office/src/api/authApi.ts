@@ -10,7 +10,7 @@ export const authApi = {
 
 /** 내 정보 (bo-my-info) */
 export const accountApi = {
-  updateName: (name: string) => request<Me>({ method: 'PATCH', url: '/me', body: { name } }),
+  updateName: (name: string) => request<Me>({ method: 'PUT', url: '/me', body: { name } }),
   changePassword: (body: { currentPassword: string; newPassword: string }) =>
     request<void>({ method: 'POST', url: '/me/password', body }),
 }

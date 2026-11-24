@@ -259,7 +259,7 @@ const routes: Record<string, Handler> = {
   'GET /auth/me': (ctx) => toMe(authenticate(ctx).staff),
 
   // 내 정보
-  'PATCH /me': (ctx) => {
+  'PUT /me': (ctx) => {
     const { staff } = authenticate(ctx)
     const name = str(ctx.body.name)
     if (!name) invalid('이름을 입력하세요.', 'name')
@@ -380,7 +380,7 @@ const routes: Record<string, Handler> = {
     commit()
     return toStaff(rec)
   },
-  'PATCH /staff/:id': (ctx) => {
+  'PUT /staff/:id': (ctx) => {
     authenticate(ctx, ['admin'])
     const s = findStaff(ctx.params.id)
     const name = str(ctx.body.name)
@@ -460,7 +460,7 @@ const routes: Record<string, Handler> = {
     authenticate(ctx, ['admin'])
     return toInstructor(findInstructor(ctx.params.id))
   },
-  'PATCH /instructors/:id': (ctx) => {
+  'PUT /instructors/:id': (ctx) => {
     authenticate(ctx, ['admin'])
     const rec = findInstructor(ctx.params.id)
     const draft = clone(rec)
@@ -469,7 +469,7 @@ const routes: Record<string, Handler> = {
     commit()
     return toInstructor(rec)
   },
-  'PATCH /instructors/:id/visibility': (ctx) => {
+  'PUT /instructors/:id/visibility': (ctx) => {
     authenticate(ctx, ['admin'])
     const rec = findInstructor(ctx.params.id)
     if (typeof ctx.body.isPublic !== 'boolean') invalid('공개 여부가 올바르지 않습니다.', 'isPublic')
@@ -484,7 +484,7 @@ const routes: Record<string, Handler> = {
     const { staff } = authenticate(ctx, ['instructor'])
     return toInstructor(instructorOf(staff.id) ?? notFound('강사 프로필'))
   },
-  'PATCH /me/instructor-profile': (ctx) => {
+  'PUT /me/instructor-profile': (ctx) => {
     const { staff } = authenticate(ctx, ['instructor'])
     const rec = instructorOf(staff.id) ?? notFound('강사 프로필')
     const draft = clone(rec)

@@ -47,7 +47,7 @@ export const staffApi = {
   },
   create: (body: StaffCreateInput) => request<Staff>({ method: 'POST', url: '/staff', body }),
   updateName: (id: number, name: string) =>
-    request<Staff>({ method: 'PATCH', url: `/staff/${id}`, body: { name } }),
+    request<Staff>({ method: 'PUT', url: `/staff/${id}`, body: { name } }),
   resetPassword: (id: number, password: string) =>
     request<void>({ method: 'POST', url: `/staff/${id}/password`, body: { password } }),
   /** 퇴사 처리 (준비·활성 → 퇴사) */
