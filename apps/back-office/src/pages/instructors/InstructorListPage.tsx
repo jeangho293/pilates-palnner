@@ -125,7 +125,6 @@ export function InstructorListPage() {
     {
       title: '연결된 직원',
       dataIndex: ['staff', 'email'],
-      ...list.sortProps('staffEmail'),
       render: (_, row) => (
         <Flex vertical>
           <Link to={paths.staffDetail(row.staff.id)}>{row.staff.name}</Link>

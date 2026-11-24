@@ -424,29 +424,7 @@ const routes: Record<string, Handler> = {
   },
 
   // 강사 프로필 (관리자)
-  'GET /instructors': (ctx) => {
-    authenticate(ctx, ['admin'])
-    const { q, visibility, sortField = 'createdAt', sortOrder = 'asc' } = ctx.query
-    let rows = getDb().instructors.map(toInstructor)
-    const keyword = (q ?? '').trim().toLowerCase()
-    if (keyword) {
-      rows = rows.filter(
-        (i) =>
-          i.displayName.toLowerCase().includes(keyword) ||
-          i.specialties.some((sp) => sp.toLowerCase().includes(keyword)),
-      )
-    }
-    if (visibility === 'public') rows = rows.filter((i) => i.isPublic)
-    if (visibility === 'private') rows = rows.filter((i) => !i.isPublic)
-    const getters: Record<string, (i: Instructor) => string | number | boolean | null> = {
-      displayName: (i) => i.displayName,
-      staffEmail: (i) => i.staff.email,
-      isPublic: (i) => (i.isPublic ? 1 : 0),
-      createdAt: (i) => i.createdAt,
-    }
-    rows = sortBy(rows, getters[sortField] ?? getters.createdAt, sortOrder as SortOrder)
-    return paginate(rows, ctx.query)
-  },
+  // GET /instructors(목록)는 core-api 연동 완료 (GET /admins/instructors/search) — mock 없음
   'GET /instructors/:id': (ctx) => {
     authenticate(ctx, ['admin'])
     return toInstructor(findInstructor(ctx.params.id))

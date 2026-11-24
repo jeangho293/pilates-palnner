@@ -80,7 +80,8 @@ export interface Instructor {
   staff: Pick<Staff, 'id' | 'name' | 'email' | 'status'>
 }
 
-export type InstructorSortField = 'displayName' | 'staffEmail' | 'isPublic' | 'createdAt'
+/** 연결된 직원 이메일 정렬은 하지 않는다 (core-api가 staff를 조인하지 않음) */
+export type InstructorSortField = 'displayName' | 'isPublic' | 'createdAt'
 export type InstructorVisibilityFilter = 'all' | 'public' | 'private'
 
 export interface InstructorListParams extends ListParams<InstructorSortField> {
