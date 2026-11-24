@@ -48,10 +48,13 @@ MCP 툴이 보이지 않으면 이 저장소에 `.mcp.json`이 있는지, 서버
 | `back-office-dev` | `apps/back-office/` | 백오피스(PLB) `front` 태스크 |
 | `core-api-dev` | `apps/core-api/` | PLW·PLB `back` 태스크 |
 
-- 🔴 **core-api 변경은 반드시 사용자 승인 후에만 한다.** core-api 아키텍처는 사용자가 직접
-  설계한다. `core-api-dev` 에이전트든 메인 세션이든, `apps/core-api`를 바꾸기 전에 바꿀 파일과
-  변경 요지를 먼저 제시하고 승인을 받는다(`.claude/hooks/require-core-api-approval.mjs` 훅이
-  쓰기 동작마다 승인 요청을 띄운다). back-office·web은 승인 없이 진행해도 된다.
+- 🔴 **core-api 변경은 사용자 승인 후에만 한다.** core-api 아키텍처는 사용자가 직접 설계한다.
+  - **사용자가 core-api 변경을 직접 지시한 경우**("~해줘", "적용해줘", "~로 바꿔줘" 등): 그 지시
+    자체가 승인이다. 다시 묻지 말고 **지시한 범위 안에서** 바로 수정한다.
+  - **그 밖의 경우**(다른 작업 중 core-api 수정이 필요해 보이거나, 지시 범위를 넘는 추가 변경이
+    필요할 때): `core-api-dev` 에이전트든 메인 세션이든 바꿀 파일과 변경 요지를 먼저 제시하고
+    승인을 받는다. 질문·리뷰 요청("이렇게 해도 되나?")은 지시가 아니므로 답만 하고 고치지 않는다.
+  - back-office·web은 승인 없이 진행해도 된다.
 - 루트 설정(`package.json`, `turbo.json`, `pnpm-workspace.yaml`)·공용 패키지(`packages/`)·
   `.claude/` 변경은 메인 세션이 맡는다. 에이전트가 범위 밖 변경이 필요하다고 보고하면 메인
   세션이 처리하거나 해당 앱 에이전트에게 넘긴다.
