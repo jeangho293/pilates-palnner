@@ -39,6 +39,7 @@ core-api 아키텍처는 사용자가 직접 설계한다. **사용자 승인 �
   (단위 `*.spec.ts` = `src/` 옆, e2e = `test/*.e2e-spec.ts`), ESLint + Prettier.
 - 도메인 모델은 이슈 보드의 도메인 정의를 따른다(컬럼 camelCase, PK int,
   `createdAt`/`updatedAt`/`deletedAt`만 datetime, 그 외 시간 컬럼은 `xxxOn` ISO 문자열).
+- 수정 API의 HTTP 메서드는 **`PUT`(`@Put`)으로 통일**한다(`PATCH`는 쓰지 않는다).
 - 예약·회원권 차감·결제 승인·권한 판정 같은 **업무 로직은 모두 core-api가 책임진다.**
   권한은 메뉴 노출이 아니라 요청 단위로 검사한다.
 - 명령은 범위를 좁혀 실행한다: `pnpm --filter core-api start:dev|build|lint|test|test:e2e`.
