@@ -46,8 +46,15 @@ export const staffApi = {
     return { ...data, instructor: data.instructor ?? null }
   },
   create: (body: StaffCreateInput) => request<Staff>({ method: 'POST', url: '/staff', body }),
-  updateName: (id: number, name: string) =>
-    request<Staff>({ method: 'PUT', url: `/staff/${id}`, body: { name } }),
+  /** 직원 이름 수정 — core-api 연동 완료 (응답 본문 없음) */
+  updateName: async (id: number, name: string): Promise<void> => {
+    await request<{ data: Record<string, never> }>({
+      method: 'PUT',
+      url: `/admins/staffs/${id}/name`,
+      body: { name },
+      mock: false,
+    })
+  },
   resetPassword: (id: number, password: string) =>
     request<void>({ method: 'POST', url: `/staff/${id}/password`, body: { password } }),
   /** 퇴사 처리 (준비·활성 → 퇴사) */

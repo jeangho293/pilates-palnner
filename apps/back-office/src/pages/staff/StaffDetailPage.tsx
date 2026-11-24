@@ -247,9 +247,9 @@ function EditNameModal({
   const { message } = App.useApp()
   const mutation = useMutation({
     mutationFn: (name: string) => staffApi.updateName(staff.id, name),
-    onSuccess: (s) => {
+    onSuccess: (_, name) => {
       message.success('이름을 바꿨습니다.')
-      onDone(s.name)
+      onDone(name)
     },
   })
   return (
@@ -270,7 +270,11 @@ function EditNameModal({
         onFinish={(v) => mutation.mutate(v.name.trim())}
         preserve={false}
       >
-        <Form.Item label="이름" name="name" rules={[{ required: true, whitespace: true, message: '이름을 입력하세요' }]}>
+        <Form.Item label="이름" name="name" rules={[
+            { required: true, whitespace: true, message: '이름을 입력하세요' },
+            // core-api StaffChangeNameDto: 2자 이상
+            { min: 2, transform: (v?: string) => v?.trim(), message: '이름은 2자 이상 입력하세요' },
+          ]}>
           <Input maxLength={30} autoFocus />
         </Form.Item>
       </Form>

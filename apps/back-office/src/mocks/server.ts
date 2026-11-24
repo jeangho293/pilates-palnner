@@ -380,16 +380,7 @@ const routes: Record<string, Handler> = {
     commit()
     return toStaff(rec)
   },
-  'PUT /staff/:id': (ctx) => {
-    authenticate(ctx, ['admin'])
-    const s = findStaff(ctx.params.id)
-    const name = str(ctx.body.name)
-    if (!name) invalid('이름을 입력하세요.', 'name')
-    s.name = name
-    s.updatedAt = nowIso()
-    commit()
-    return toStaff(s)
-  },
+  // PUT /staff/:id(이름 수정)는 core-api 연동 완료 (PUT /admins/staffs/:id/name) — mock 없음
   'POST /staff/:id/password': (ctx) => {
     authenticate(ctx, ['admin'])
     const s = findStaff(ctx.params.id)
