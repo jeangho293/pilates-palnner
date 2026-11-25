@@ -438,15 +438,7 @@ const routes: Record<string, Handler> = {
     commit()
     return toInstructor(rec)
   },
-  'PUT /instructors/:id/visibility': (ctx) => {
-    authenticate(ctx, ['admin'])
-    const rec = findInstructor(ctx.params.id)
-    if (typeof ctx.body.isPublic !== 'boolean') invalid('공개 여부가 올바르지 않습니다.', 'isPublic')
-    setVisibility(rec, ctx.body.isPublic)
-    rec.updatedAt = nowIso()
-    commit()
-    return toInstructor(rec)
-  },
+  // PUT /instructors/:id/visibility(공개 여부)는 core-api 연동 완료 (PUT /admins/instructors/:id/public) — mock 없음
 
   // 내 강사 프로필 (강사)
   'GET /me/instructor-profile': (ctx) => {

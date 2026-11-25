@@ -64,8 +64,15 @@ export const instructorApi = {
   get: (id: number) => request<Instructor>({ method: 'GET', url: `/instructors/${id}` }),
   update: (id: number, body: InstructorProfileInput) =>
     request<Instructor>({ method: 'PUT', url: `/instructors/${id}`, body }),
-  setVisibility: (id: number, isPublic: boolean) =>
-    request<Instructor>({ method: 'PUT', url: `/instructors/${id}/visibility`, body: { isPublic } }),
+  /** 고객 웹 공개 여부 변경 — core-api 연동 완료 (응답 본문 없음) */
+  setVisibility: async (id: number, isPublic: boolean): Promise<void> => {
+    await request<{ data: Record<string, never> }>({
+      method: 'PUT',
+      url: `/admins/instructors/${id}/public`,
+      body: { isPublic },
+      mock: false,
+    })
+  },
   /** 강사 본인 (bo-my-instructor-profile) */
   getMine: () => request<Instructor>({ method: 'GET', url: '/me/instructor-profile' }),
   updateMine: (body: Omit<InstructorProfileInput, 'isPublic'>) =>

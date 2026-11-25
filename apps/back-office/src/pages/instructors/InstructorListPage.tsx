@@ -49,7 +49,8 @@ export function InstructorListPage() {
 
   // 공개 Switch: 즉시 저장 + 낙관적 반영, 실패 시 원래 상태로 되돌림
   const visibility = useMutation({
-    mutationFn: ({ id, isPublic }: { id: number; isPublic: boolean }) => instructorApi.setVisibility(id, isPublic),
+    mutationFn: ({ id, isPublic }: { id: number; isPublic: boolean; displayName: string }) =>
+      instructorApi.setVisibility(id, isPublic),
     onMutate: async ({ id, isPublic }) => {
       await queryClient.cancelQueries({ queryKey })
       const prev = queryClient.getQueryData<Page<Instructor>>(queryKey)
@@ -61,9 +62,9 @@ export function InstructorListPage() {
     onError: (_e, _v, ctx) => {
       if (ctx?.prev) queryClient.setQueryData(queryKey, ctx.prev)
     },
-    onSuccess: (inst) => {
+    onSuccess: (_, { isPublic, displayName }) => {
       message.success(
-        inst.isPublic ? `${inst.displayName} 프로필을 고객 웹에 공개했습니다.` : `${inst.displayName} 프로필을 고객 웹에서 숨겼습니다.`,
+        isPublic ? `${displayName} 프로필을 고객 웹에 공개했습니다.` : `${displayName} 프로필을 고객 웹에서 숨겼습니다.`,
       )
     },
     onSettled: () => {
@@ -146,7 +147,7 @@ export function InstructorListPage() {
           checkedChildren="공개"
           unCheckedChildren="비공개"
           loading={visibility.isPending && visibility.variables?.id === row.id}
-          onChange={(checked) => visibility.mutate({ id: row.id, isPublic: checked })}
+          onChange={(checked) => visibility.mutate({ id: row.id, isPublic: checked, displayName: row.displayName })}
           aria-label={`${row.displayName} 고객 웹 공개`}
         />
       ),
