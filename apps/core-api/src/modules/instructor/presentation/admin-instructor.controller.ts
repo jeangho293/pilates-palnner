@@ -1,6 +1,6 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Put, Query } from '@nestjs/common';
 import { AdminInstructorService } from '../application/admin-instructor.service';
-import { AdminInstructorQueryDto } from './dto';
+import { AdminInstructorQueryDto, InstructorChangePublicDto } from './dto';
 
 @Controller('admins/instructors')
 export class AdminInstructorController {
@@ -17,5 +17,18 @@ export class AdminInstructorController {
 
     // 4. Send response
     return { data };
+  }
+
+  @Put(':id/public')
+  async changePublicStatus(@Param('id', ParseIntPipe) id: number, @Body() body: InstructorChangePublicDto) {
+    // 1. Destructure body, params, query
+    const { isPublic } = body;
+
+    // 2. Get context
+    // 3. Get result
+    await this.adminInstructorService.changePublicStatus({ id, isPublic });
+
+    // 4. Send response
+    return { data: {} };
   }
 }

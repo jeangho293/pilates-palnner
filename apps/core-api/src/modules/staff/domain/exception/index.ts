@@ -6,8 +6,8 @@ export class StaffNotFoundException extends DddException {
     super({
       statusCode: HttpStatus.NOT_FOUND,
       errorCode: 'STAFF_NOT_FOUND',
-      clientMessage: '존재하지 않는 스태프입니다.',
-      serverMessage: `존재하지 않는 스태프입니다. id: ${id}`,
+      clientMessage: '존재하지 않는 직원입니다.',
+      serverMessage: `존재하지 않는 직원입니다. id: ${id}`,
     });
   }
 }

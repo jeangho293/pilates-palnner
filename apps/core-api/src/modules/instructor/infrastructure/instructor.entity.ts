@@ -1,15 +1,35 @@
 import { DddRepository } from '@libs/ddd';
 import { Injectable } from '@nestjs/common';
 import { Instructor } from '../domain/instructor.entity';
-import { applyLikeSearch, applyPagination, PaginationOptions } from '@libs/utils';
+import {
+  applyLikeSearch,
+  applyPagination,
+  checkInValue,
+  convertOptions,
+  PaginationOptions,
+  TypeormRelationOptions,
+} from '@libs/utils';
 
 @Injectable()
 export class InstructorRepository extends DddRepository<Instructor> {
   entityClass = Instructor;
 
-  async find() {}
+  async find(conditions: { ids?: number[] }, options?: TypeormRelationOptions<Instructor>) {
+    return this.entityManager.find(this.entityClass, {
+      where: {
+        id: checkInValue(conditions.ids),
+      },
+      ...convertOptions(options),
+    });
+  }
 
-  async count() {}
+  async count(conditions: { ids?: number[] }) {
+    return this.entityManager.count(this.entityClass, {
+      where: {
+        id: checkInValue(conditions.ids),
+      },
+    });
+  }
 
   async findAndCount(conditions: { isPublic?: boolean; keyword?: string }, options?: PaginationOptions) {
     const query = this.createQueryBuilder('instructor');
