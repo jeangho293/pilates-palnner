@@ -4,13 +4,17 @@ import { DatabasesModule } from '@databases';
 import { ConfigsModule } from '@configs';
 import { ContextModule } from '@libs/context';
 import { ContextMiddleware, UUIDMiddleware } from '@middlewares';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ExceptionFilter } from '@libs/filters';
+import { RequestLoggerInterceptor } from '@libs/interceptors';
 
 @Module({
   imports: [ConfigsModule, ContextModule, DatabasesModule, GlobalDomainModule],
   controllers: [],
-  providers: [{ provide: APP_FILTER, useClass: ExceptionFilter }],
+  providers: [
+    { provide: APP_FILTER, useClass: ExceptionFilter },
+    { provide: APP_INTERCEPTOR, useClass: RequestLoggerInterceptor },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
